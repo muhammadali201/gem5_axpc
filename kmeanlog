@@ -1,0 +1,10 @@
+gem5 Simulator System.  http://gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 compiled May 28 2018 00:05:40
+gem5 started May 29 2018 04:58:15
+gem5 executing on acer-lp, pid 2719
+command line: build/X86/gem5.opt configs/learning_gem5/part3/simpl2_l2cach.py
+
+Global frequency set at 1000000000000 ticks per second
+Beginning simulation!

@@ -1,0 +1,21 @@
+gem5 Simulator System.  http://gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 compiled May 28 2018 00:05:40
+gem5 started Jun  1 2018 03:10:41
+gem5 executing on acer-lp, pid 11183
+command line: build/X86/gem5.opt configs/learning_gem5/part3/simpl2_l2cach.py
+
+Global frequency set at 1000000000000 ticks per second
+Beginning simulation!
+From-App: Calling initRgbImage 
+From-App: Calling Load RGB Image 
+FromApp: LoadRgb Image starting 
+From-App:loadRgbImage: image->h = 512, image->w = 512
+From-App:loadRgbImage: pixel = 0x7cd700, *pixel = 0x7ce710, **pixel = 0x9cd700  pixels_end = 0x7cd700 &pixels[0] = 0x7cd700 
+From-App:loadRgbImage: First Row:  Addr pixels[0][0] = 0x7ce710, pixels[0][511] = 0x7d0efc
+From-App:loadRgbImage: First Row:  Addr pixels[511][0] = 0xccdf00, pixels[511][511] = 0xcd06ec
+From-App:loadRgbImage: Addr pixels = 0x7cd700, image->pixels = 0x7cd700
+From-App: Calling initClusters 
+From-App: Calling segmentImage 
+Exiting @ tick 1848230592000 because exiting with last active thread context

@@ -1,0 +1,14 @@
+
+
+
+
+Import('*')
+
+SimObject('Sl1Cache.py')
+SimObject('SimpleL2Cache.py')
+
+Source('simple_l2cache.cc')
+Source('sl1_cache.cc')
+
+DebugFlag('SimpleL2Cache')
+DebugFlag('Sl1Cache')
