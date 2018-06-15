@@ -13,6 +13,7 @@
 * Adding some extra comments
 */
 
+// creating dummy comment for slave2 branch to make it different from master
 class BasicL2Cache : public MemObject
 {
     private:
