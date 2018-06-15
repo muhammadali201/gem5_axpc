@@ -10,7 +10,7 @@
 * A very simple cache object. Has a fully-associative data store with random replacements.
 * Fully Blocking. Only a single request can be outstanding at a time
 * This cache is a "writeBack Cache" what is this?
-*
+* Adding some extra comments
 */
 
 class BasicL2Cache : public MemObject
