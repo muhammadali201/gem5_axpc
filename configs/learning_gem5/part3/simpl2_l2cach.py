@@ -99,8 +99,7 @@ system.system_port = system.membus.slave
 process = Process()
 # Set the command
 # cmd is a list which begins with the executable (like argv)
-process.cmd = ['tests/test-progs/MyProgs/kmean_bins/kmean_4.o']
-#process.cmd = ['tests/test-progs/MyProgs/Ex3']
+process.cmd = ['tests/test-progs/MyProgs/Ex3.o']
 # Set the cpu to use the process as its workload and create thread contexts
 system.cpu.workload = process
 system.cpu.createThreads()
