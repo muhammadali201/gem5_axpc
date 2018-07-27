@@ -66,8 +66,9 @@ system.system_port = system.membus.slave
 process = Process()
 # Set the command
 # cmd is a list which begins with the executable (like argv)
-process.cmd = ['tests/test-progs/MyProgs/kmean_out.o','kmean_bins/5.rgb',\
-                'tests/test-progs/MyPorgs/kmean_bins/5_out.rgb']
+process.cmd = ['tests/test-progs/MyProgs/kmean_out.o', \
+               '../../axbench/applications/kmeans/test.data/input/4.rgb', \
+               '4_out.rgb']
 #process.cmd = ['tests/test-progs/MyProgs/kmean_bins/kmean_4.o']
 #process.cmd = ['tests/test-progs/MyProgs/Ex3.o']
 # Set the cpu to use the process as its workload and create thread contexts
