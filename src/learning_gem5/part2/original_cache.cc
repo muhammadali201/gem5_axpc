@@ -441,7 +441,8 @@ OriginalCache::insert(PacketPtr pkt)
         cacheStore.erase(block->first);
     }
 
-   // DPRINTF(OriginalCache, "OriginalCache::insert: Inserting %s\n", pkt->print());
+    DPRINTF(OriginalCache, "OriginalCache::insert: Inserting %s\n",\
+                            pkt->print());
     DDUMP(OriginalCache, pkt->getConstPtr<uint8_t>(), blockSize);
 
     // Allocate space for the cache block data

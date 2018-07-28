@@ -6,9 +6,13 @@ Import('*')
 
 SimObject('BasicL1Cache.py')
 SimObject('BasicL2Cache.py')
+SimObject('BunkerL2Cache.py')
 
 Source('basic_l2cache.cc')
 Source('basic_l1cache.cc')
+Source('bunker_l2cache.cc')
 
 DebugFlag('BasicL2Cache')
 DebugFlag('BasicL1Cache')
+DebugFlag('BunkerL2Cache')
+DebugFlag('BunkerRange')

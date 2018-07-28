@@ -86,7 +86,7 @@ BasicL1Cache::CPUSidePort::sendPacket(PacketPtr pkt)
     panic_if(blockedPacket != nullptr, "Should never try to send if blocked!");
 
     // If we can't send the packet across the port, store it for later.
-    DPRINTF(BasicL1Cache, "Sending %s to CPU\n", pkt->print());
+  //  DPRINTF(BasicL1Cache, "Sending %s to CPU\n", pkt->print());
     if (!sendTimingResp(pkt)) {
         DPRINTF(BasicL1Cache, "failed!\n");
         blockedPacket = pkt;
@@ -130,12 +130,17 @@ BasicL1Cache::CPUSidePort::recvTimingReq(PacketPtr pkt)
     }
     // Just forward to the cache.
     if (!owner->handleRequest(pkt, id)) {
-        DPRINTF(BasicL1Cache, "CPUSide:recvTimingReq Request failed, owner->handleRequest returned false\n");
-        // stalling
+        /**
+          *  DPRINTF(BasicL1Cache, "CPUSide:recvTimingReq Request failed,
+          *  owner->handleRequest returned false\n");
+          *  stalling
+          */
         needRetry = true;
         return false;
     } else {
-        DPRINTF(BasicL1Cache, "CPUSide::recvTiming, Request succeeded and is now scheduled for latency, L1 is now blocked\n");
+        /*  DPRINTF(BasicL1Cache, "CPUSide::recvTiming, Request succeeded
+            and is now scheduled for latency, L1 is now blocked\n");
+        */
         return true;
     }
 }
@@ -150,7 +155,7 @@ BasicL1Cache::CPUSidePort::recvRespRetry()
     PacketPtr pkt = blockedPacket;
     blockedPacket = nullptr;
 
-    DPRINTF(BasicL1Cache, "Retrying response pkt %s\n", pkt->print());
+//    DPRINTF(BasicL1Cache, "Retrying response pkt %s\n", pkt->print());
     // Try to resend it. It's possible that it fails again.
     sendPacket(pkt);
 
@@ -205,21 +210,26 @@ BasicL1Cache::handleRequest(PacketPtr pkt, int port_id)
         // There is currently an outstanding request so we can't respond. Stall
         return false;
     }
-    
-    DPRINTF(BasicL1Cache, " \n\n  Orig-Cach::hanReq. Got request from CPUSidePort:   for addr %#x %s\n", \
-                         pkt->getAddr(), pkt->print());
-    if(pkt->req->hasVaddr())
-    {
-        DPRINTF(BasicL1Cache, " \t Orig-Cach::handReq. Vaddr = %#x \n ", pkt->req->getVaddr());
-    }
-    else
-    {
-        DPRINTF(BasicL1Cache, " \t Orig-Cach::handReq. Vaddr Not yet set, But WHY?\n ");
-    
-    }
 
-    DPRINTF(BasicL1Cache, "Orig-Cach::hanReq, L1 Now blocekd, Request scheduled for latency \n");
-    // This cache is now blocked waiting for the response to this packet.
+    if (pkt->req->hasVaddr())
+    {
+        if ((pkt->req->getVaddr() > 0x7cd700) &&
+            (pkt->req->getVaddr() < 0xee0700)) {
+            DPRINTF(BasicL1Cache, " \n\n  Orig-Cach::hanReq. Got request"\
+                                  " from  CPUSidePort for addr %#x %s\n",\
+                                   pkt->getAddr(), pkt->print());
+            DPRINTF(BasicL1Cache, " \n Orig-Cach::handReq. Vaddr = %#x \n ",\
+                                   pkt->req->getVaddr());
+        }
+    }
+    else {
+        DPRINTF(BasicL1Cache, " \n Orig-Cach::handReq. Vaddr Not set\n ");
+    }
+    /*
+        DPRINTF(BasicL1Cache, "Orig-Cach::hanReq, L1 Now blocekd,
+        Request scheduled for latency \n");
+        This cache is now blocked waiting for the response to this packet.
+    */
     blocked = true;
 
     // Store the port for when we get the response
@@ -236,7 +246,7 @@ bool
 BasicL1Cache::handleResponse(PacketPtr pkt)
 {
     assert(blocked);
-    DPRINTF(BasicL1Cache, "BasicL1Cache::handleResponse: Got response for addr %#x\n", pkt->getAddr());
+    DPRINTF(BasicL1Cache, "L1:haRes: Got resp for addr %#x\n", pkt->getAddr());
 
     // For now assume that inserts are off of the critical path and don't count
     // for any added latency.
@@ -300,9 +310,17 @@ void
 BasicL1Cache::accessTiming(PacketPtr pkt)
 {
     bool hit = accessFunctional(pkt);
-    DPRINTF(BasicL1Cache, "BasicL1Cache::accessTiming, Latency complete. Serving Request\n ");
-    DPRINTF(BasicL1Cache, "BasicL1Cache::accessTiming %s for packet: %s\n", hit ? "Hit" : "Miss",
-            pkt->print());
+    DPRINTF(BasicL1Cache, "BasicL1Cache::accessTiming, Latency complete."\
+                          "Serving Request\n ");
+
+    if (pkt->req->hasVaddr())
+    {
+        if ((pkt->req->getVaddr() > 0x7cd700) &&
+            (pkt->req->getVaddr() < 0xee0700) ) {
+            DPRINTF(BasicL1Cache, "l1:aTim  %s for packet: %s\n",\
+                                   hit ? "Hit" : "Miss",pkt->print());
+        }
+    }
 
     if (hit) {
         // Respond to the CPU side
@@ -348,16 +366,18 @@ BasicL1Cache::accessTiming(PacketPtr pkt)
 
             // Should now be block aligned
             assert(new_pkt->getAddr() == new_pkt->getBlockAddr(blockSize));
-
-            DPRINTF(BasicL1Cache, "\n Orig-Cach::accTim. Miss Case, After Upgrading Packet to Block Size \n");
-            DPRINTF(BasicL1Cache, "\n Ofig-Cach::accTim, \t New Pkt Size %d,\t" 
-                                   " New Pkt Phy Addr %#x\t"
-                                   " New PKt Vir Addr %#x \t"
+/*
+            DPRINTF(BasicL1Cache, "\n Orig-Cach::accTim. Miss Case, After"\
+                                  " Upgrading Packet to Block Size \n");
+            DPRINTF(BasicL1Cache, "\n Ofig-Cach::accTim, \t New Pkt Size %d,"\
+                                  "\t" \
+                                   " New Pkt Phy Addr %#x\t" \
+                                   " New PKt Vir Addr %#x \t"\
                                    " New Pkt Blk Addr %#x\n", \
-                                    new_pkt->getSize(), new_pkt->getAddr(), new_pkt->req->getVaddr(), \
+                                    new_pkt->getSize(), new_pkt->getAddr(),"\
+                                   " new_pkt->req->getVaddr(), \
                                     new_pkt->getBlockAddr(blockSize));
-                                   
-        
+     */
 
             // Save the old packet
             outstandingPacket = pkt;
@@ -373,7 +393,8 @@ BasicL1Cache::accessFunctional(PacketPtr pkt)
 {
     Addr block_addr = pkt->getBlockAddr(blockSize);
 
-    DPRINTF(BasicL1Cache," accTim--->accFunc \t  pkt Addr %#x \t pkt size %u "
+    /*
+       DPRINTF(BasicL1Cache," aTim->aFun \t  pkt Addr %#x \t pkt size %u " \
                           " \t blk size %d \t blk Addr %#x \n\n ", \
                           pkt->getAddr(), pkt->getSize(), blockSize, block_addr);
     
@@ -381,15 +402,13 @@ BasicL1Cache::accessFunctional(PacketPtr pkt)
 
     if(pkt->req->hasVaddr())
     {
-        DPRINTF(BasicL1Cache, " Orig-Cach::accFunc. Vaddr = %#x \n ", pkt->req->getVaddr());
+        DPRINTF(BasicL1Cache, "L1:aFun Vaddr = %#x \n ", pkt->req->getVaddr());
     }
     else
     {
-        DPRINTF(BasicL1Cache, " BasicL1Cache::accessFunctional. Vaddr Not yet set, But WHY?\n\n ");
-    
+        DPRINTF(BasicL1Cache, " L1:aFun No Vaddr \n ");
     }
-
-  
+    */
 
 
     auto it = cacheStore.find(block_addr);
@@ -412,7 +431,7 @@ void
 BasicL1Cache::insert(PacketPtr pkt)
 {
     // The packet should be aligned.
-    DPRINTF(BasicL1Cache, " L1insert, (Called from handleResponse) \n");
+ //   DPRINTF(BasicL1Cache, " L1insert, (Called from handleResponse) \n");
     assert(pkt->getAddr() ==  pkt->getBlockAddr(blockSize));
     // The address should not be in the cache
     assert(cacheStore.find(pkt->getAddr()) == cacheStore.end());
