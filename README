@@ -1,41 +1,29 @@
-This is the gem5 simulator.
+This is gem5 modified to for approximate computing.
 
-The main website can be found at http://www.gem5.org
+Bunker Cache has been implemented. The src for Bunker Cache is in src/learning_gem5/part2. This is a working bunker cache implementation 
+but doesn't support programmable radix / stride. 
 
-A good starting point is http://www.gem5.org/Introduction, and for
-more information about building the simulator and getting started
-please see http://www.gem5.org/Documentation and
-http://www.gem5.org/Tutorials.
+to change the STRIDE / RADIX, open bunker_cache.cc and search for STRIDE. 
 
-To build gem5, you will need the following software: g++ or clang,
-Python (gem5 links in the Python interpreter), SCons, SWIG, zlib, m4,
-and lastly protobuf if you want trace capture and playback
-support. Please see http://www.gem5.org/Dependencies for more details
-concerning the minimum versions of the aforementioned tools.
+Usage:
 
-Once you have all dependencies resolved, type 'scons
-build/<ARCH>/gem5.opt' where ARCH is one of ALPHA, ARM, NULL, MIPS,
-POWER, SPARC, or X86. This will build an optimized version of the gem5
-binary (gem5.opt) for the the specified architecture. See
-http://www.gem5.org/Build_System for more details and options.
+clone the git repo.
 
-With the simulator built, have a look at
-http://www.gem5.org/Running_gem5 for more information on how to use
-gem5.
+run scons build/x86/gem5.opt
 
-The basic source release includes these subdirectories:
-   - configs: example simulation configuration scripts
-   - ext: less-common external packages needed to build gem5
-   - src: source code of the gem5 simulator
-   - system: source for some optional system software for simulated systems
-   - tests: regression tests
-   - util: useful utility programs and files
+ config/learning_gem5/part2/original_cache.py 
 
-To run full-system simulations, you will need compiled system firmware
-(console and PALcode for Alpha), kernel binaries and one or more disk
-images. Please see the gem5 download page for these items at
-http://www.gem5.org/Download
+is the configuration script with same old trivial L1 cache. You can change / play around
+with system configurations. In process.cmd, change the executable to whatever you want.
 
-If you have questions, please send mail to gem5-users@gem5.org
+ config/learning_gem5/part2/bunker_cache.py 
 
-Enjoy using gem5 and please share your modifications and extensions.
+is the configuration script with same as above L1 cache but includes the bunker approximation. run the same binary as above,
+you can compare the results in m5out directorys. Bunker Cache misses should be less than L1 cache above (for same configuration / size)
+
+
+Bunker L2 cache is still in progress. Kmeans is just too heave for my physical / virtual machine. I can't get the physical address of the
+data blocks on which I need to apply bunker approximation.
+
+I will run gem5 on my work machine with 128 GB of RAM and 48 core Xenon machine. But for that, I have to copy my VM to that machine. These 
+days I am doing that. 
